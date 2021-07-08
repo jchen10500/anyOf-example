@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "My schema",
+    "additionalProperties": false,
+    "properties": {
+        "AddressLine1": { "type": "string" },
+        "X": {
+            "anyOf": [
+                { "type": "object",
+                  "properties": {
+                      "accessMe": {"type": "string"}
+                  }
+                },
+                { "type": "number", "minimum": 0 }
+              ]
+        }
+    },
+    "required": [ "AddressLine1" ]
+}
+
