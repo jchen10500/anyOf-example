@@ -1,0 +1,1115 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "IBM Analytics Engine API",
+      "description": "With IBM Analytics Engine you can create Apache Spark and Apache Hadoop\nclusters and customize these clusters by using scripts. You can work with data\nin IBM Cloud Object Storage.",
+      "version": "3.0.0",
+      "x-last-updated": "2021-04-21"
+    },
+    "tags": [
+      {
+        "name": "Analytics Engines V3",
+        "description": "Serverless cluster that can run Spark analytics workloads."
+      }
+    ],
+    "paths": {
+      "/v3/analytics_engines/{instance_id}": {
+        "get": {
+          "tags": [
+            "Analytics Engines V3"
+          ],
+          "summary": "Find instance by id",
+          "description": "Returns details of a single instance.",
+          "operationId": "get_instance_by_id",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Identity Access Management (IAM) bearer token.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "instance_id",
+              "in": "path",
+              "description": "Identifier of the instance to retrieve.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {
+                "Server": {
+                  "description": "2.0.0",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/InstanceDetails"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "instance_id": "dc0e9889-eab2-4t9e-9441-566209499546",
+                        "state": "created",
+                        "state_change_time": "2021-04-21T04:24:01Z",
+                        "default_runtime": {
+                          "spark_version": "3.0",
+                          "additional_packages": [
+                            "parquet-modular-encryption"
+                          ],
+                          "instance_home": {
+                            "guid": "30d5c4a7-9fb7-4712-9039-a79417dec87b",
+                            "provider": "ibm-cos",
+                            "type": "objectstore",
+                            "region": "us-south",
+                            "endpoint": "s3.us-south.cloud-object-storage.appdomain.cloud",
+                            "bucket": "ae-bucket-do-not-delete-dc0e9889-eab2-4t9e-9441-566209499546",
+                            "hmac_access_key": "eH****g=",
+                            "hmac_secret_key": "4d********76"
+                          },
+                          "default_config": {
+                            "spark.driver.memory": "4g",
+                            "spark.driver.cores": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Resource Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/v3/analytics_engines/{instance_id}/spark/applications": {
+        "post": {
+          "tags": [
+            "Analytics Engines V3"
+          ],
+          "summary": "Deploys a Spark application in the Analytics Engine instance.",
+          "description": "Creates a Spark application based on the requested specification and returns the details of the submitted application.",
+          "operationId": "create_application",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Identity Access Management (IAM) bearer token.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "instance_id",
+              "in": "path",
+              "description": "The identifier of the instance where the Spark application is submitted.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationRequest"
+                }
+              }
+            },
+            "description": "Request json to deploy a Spark application",
+            "required": true
+          },
+          "x-codegen-request-body-name": "body",
+          "responses": {
+            "201": {
+              "description": "Created",
+              "headers": {
+                "Server": {
+                  "description": "2.0.0",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApplicationResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "application_id": "87e63712-a823-4aa1-9f6e-7291d4e5a113",
+                        "state": "running",
+                        "start_time": "2021-04-21T04:24:01Z"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Resource Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            }
+          },
+          "x-sdk-operations": {}
+        },
+        "get": {
+          "tags": [
+            "Analytics Engines V3"
+          ],
+          "summary": "Gets all applications submitted in an instance with a specified instance_id.",
+          "description": "Returns a list of all applications submitted in the specified instance.",
+          "operationId": "get_applications",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Identity Access Management (IAM) bearer token.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "instance_id",
+              "in": "path",
+              "description": "Identifier of the instance where the applications run.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {
+                "Server": {
+                  "description": "2.0.0",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApplicationCollection"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "applications": [
+                          {
+                            "application_id": "db933645-0b68-4dcb-80d8-7b71a6c8e542",
+                            "spark_application_id": "8j93-9s02g-lk7z6",
+                            "state": "finished",
+                            "start_time": "2021-04-21T04:24:01Z",
+                            "finish_time": "2021-04-21T04:25:18Z"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Resource Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            }
+          },
+          "x-sdk-operations": {}
+        }
+      },
+      "/v3/analytics_engines/{instance_id}/spark/applications/{application_id}": {
+        "get": {
+          "tags": [
+            "Analytics Engines V3"
+          ],
+          "summary": "Gets the details of the application identified by the application_id identifier",
+          "description": "Returns the details related to the configuration and state of a submitted Spark application.",
+          "operationId": "get_application_by_id",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Identity Access Management (IAM) bearer token.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "instance_id",
+              "in": "path",
+              "description": "Identifier of the instance where the application runs.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "application_id",
+              "in": "path",
+              "description": "Identifier of the application for which details are requested.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {
+                "Server": {
+                  "description": "2.0.0",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApplicationGetResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "application_details": {
+                          "application": "/opt/ibm/spark/examples/src/main/python/wordcount.py",
+                          "application_arguments": [
+                            "/opt/ibm/spark/examples/src/main/resources/people.txt"
+                          ],
+                          "mode": "stand-alone",
+                          "application_id": "a9a6f328-56d8-4923-8042-97652fff2af3",
+                          "state": "finished",
+                          "start_time": "2021-04-21T04:24:01Z",
+                          "finish_time": "2021-04-21T04:28:15Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Resource Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            }
+          },
+          "x-sdk-operations": {}
+        },
+        "delete": {
+          "tags": [
+            "Analytics Engines V3"
+          ],
+          "summary": "Stops the specified application",
+          "description": "Stops a running application identified by the application_id identifier. This is an idempotent operation. Performs no action if the requested application is already stopped or completed.",
+          "operationId": "delete_application_by_id",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Identity Access Management (IAM) bearer token.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "instance_id",
+              "in": "path",
+              "description": "Identifier of the instance to which the applications belongs.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "application_id",
+              "in": "path",
+              "description": "Identifier of the application that needs to be stopped.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "No Content",
+              "headers": {
+                "Server": {
+                  "description": "2.0.0",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Resource Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            }
+          },
+          "x-sdk-operations": {}
+        }
+      },
+      "/v3/analytics_engines/{instance_id}/spark/applications/{application_id}/state": {
+        "get": {
+          "tags": [
+            "Analytics Engines V3"
+          ],
+          "summary": "Gets the status of the application identified by the application_id identifier",
+          "description": "Returns the status of the application identified by the application_id identifier.",
+          "operationId": "get_application_state",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Identity Access Management (IAM) bearer token.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "instance_id",
+              "in": "path",
+              "description": "Identifier of the instance to which the applications belongs.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "application_id",
+              "in": "path",
+              "description": "Identifier of the application for which details are requested.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {
+                "Server": {
+                  "description": "2.0.0",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApplicationGetStateResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "application_id": "9da32aaf-df69-4e61-bdb8-1b2772c0f677",
+                        "state": "finished",
+                        "start_time": "2021-04-21T04:24:01Z",
+                        "finish_time": "2021-04-21T04:28:15Z"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Resource Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorContainer"
+                  }
+                }
+              }
+            }
+          },
+          "x-sdk-operations": {}
+        }
+      }
+    },
+    "servers": [
+      {
+        "url": "/"
+      }
+    ],
+    "components": {
+      "schemas": {
+        "ErrorContainer": {
+          "type": "object",
+          "required": [
+            "errors",
+            "trace",
+            "status_code"
+          ],
+          "properties": {
+            "trace": {
+              "type": "string",
+              "description": "Error trace"
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              },
+              "description": "Errors list"
+            },
+            "status_code": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "description": "Errors"
+        },
+        "ErrorModel": {
+          "type": "object",
+          "required": [
+            "code",
+            "message"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code"
+            },
+            "target": {
+              "$ref": "#/components/schemas/ErrorTargetModel"
+            },
+            "message": {
+              "type": "string",
+              "description": "Error message"
+            },
+            "more_info": {
+              "type": "string",
+              "description": "More information about error"
+            }
+          },
+          "additionalProperties": {
+            "type": "object"
+          },
+          "description": "Error model"
+        },
+        "ErrorTargetModel": {
+          "type": "object",
+          "required": [
+            "name",
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "field",
+                "parameter",
+                "header"
+              ],
+              "description": "Target model"
+            },
+            "name": {
+              "type": "string",
+              "description": "Target name"
+            }
+          },
+          "description": "Target model"
+        },
+        "Volume": {
+          "type": "object",
+          "description": "Volume properties for an instance",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of the volume"
+            },
+            "provider": {
+              "type": "string",
+              "description": "Volume provider information"
+            },
+            "type": {
+              "type": "string",
+              "description": "Type of volume"
+            },
+            "details": {
+              "type": "object",
+              "description": "Volume details",
+              "properties": {
+                "resource_instance_id": {
+                  "type": "string",
+                  "description": "resource_instance id"
+                },
+                "bucket": {
+                  "type": "string",
+                  "description": "Cloud Object Storage bucket name for the instance"
+                },
+                "region": {
+                  "type": "string",
+                  "description": "Region information for the bucket"
+                },
+                "cos_hmac_keys": {
+                  "type": "object",
+                  "description": "Cloud Object Storage access key details",
+                  "properties": {
+                    "access_key_id": {
+                      "type": "string",
+                      "description": "Access key ID to the Cloud Object Storage bucket"
+                    },
+                    "secret_access_key": {
+                      "type": "string",
+                      "description": "Secret access key to the Cloud Object Storage bucket"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "InstanceDetails": {
+          "type": "object",
+          "description": "Instance details",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "description": "Instance id"
+            },
+            "state": {
+              "type": "string",
+              "description": "Instance state",
+              "enum": [
+                "created",
+                "deleted",
+                "failed"
+              ]
+            },
+            "state_change_time": {
+              "type": "string",
+              "description": "Timestamp when the state of the instance was changed.",
+              "format": "date-time"
+            },
+            "default_runtime": {
+              "type": "object",
+              "description": "Specifies the default runtime to use for all workloads that run in this instance.",
+              "properties": {
+                "spark_version": {
+                  "type": "string",
+                  "description": "Version of Spark runtime to use. Currently, only 3.0 is supported."
+                },
+                "additional_packages": {
+                  "type": "array",
+                  "description": "Add-on packages.",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "instance_home": {
+              "type": "object",
+              "description": "Instance home storage associated with the instance.",
+              "properties": {
+                "guid": {
+                  "type": "string",
+                  "description": "UUID of the instance home storage instance"
+                },
+                "provider": {
+                  "type": "string",
+                  "description": "Currently only ibm-cos (IBM Cloud Object Storage) is supported"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Type of the instance home storage. Currently, only objectstore (Cloud Object Storage)is supported."
+                },
+                "region": {
+                  "type": "string",
+                  "description": "Region of the Cloud Object Storage instance."
+                },
+                "endpoint": {
+                  "type": "string",
+                  "description": "Endpoint to access the Cloud Object Storage instance."
+                },
+                "bucket": {
+                  "type": "string",
+                  "description": "Cloud Object Storage bucket used as instance home."
+                },
+                "hmac_access_key": {
+                  "type": "string",
+                  "description": "Cloud Object Storage access key. Masked for security reasons."
+                },
+                "hmac_secret_key": {
+                  "type": "string",
+                  "description": "Cloud Object Storage secret key. Masked for security reasons."
+                }
+              }
+            },
+            "default_config": {
+              "type": "object",
+              "description": "Instance level default configuration for Spark workloads.",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "description": "Value of the Spark configuration key"
+                }
+              }
+            }
+          }
+        },
+        "ApplicationResponse": {
+          "type": "object",
+          "description": "Application response details",
+          "properties": {
+            "application_id": {
+              "type": "string",
+              "description": "Application ID"
+            },
+            "state": {
+              "type": "string",
+              "description": "Application state",
+              "enum": [
+                "accepted",
+                "finished",
+                "killed",
+                "failed",
+                "error",
+                "running",
+                "submitted",
+                "stopped",
+                "waiting"
+              ]
+            },
+            "start_time": {
+              "type": "string",
+              "description": "Application start time",
+              "format": "date-time"
+            }
+          }
+        },
+        "ApplicationRequest": {
+          "type": "object",
+          "description": "Application request details",
+          "properties": {
+            "application_details": {
+              "type": "object",
+              "description": "Application details",
+              "properties": {
+                "application": {
+                  "type": "string",
+                  "description": "Application name"
+                },
+                "application_arguments": {
+                  "type": "array",
+                  "description": "Application arguments",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "conf": {
+                  "type": "object",
+                  "description": "Application configurations to override. See [Spark environment variables](https://spark.apache.org/docs/latest/configuration.html#environment-variables) for a list of the supported variables.",
+                  "additionalProperties": true,
+                  "example": {
+                    "spark.driver.cores": "1",
+                    "spark.driver.memory": "4g"
+                  }
+                },
+                "env": {
+                  "type": "object",
+                  "description": "Application environment configurations to override. See [Spark environment variables](https://spark.apache.org/docs/latest/configuration.html#environment-variables) for a list of the supported variables.",
+                  "additionalProperties": true,
+                  "example": {
+                    "SPARK_ENV_LOADED": "2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ApplicationGetResponse": {
+          "type": "object",
+          "description": "Response of the Application Get API",
+          "properties": {
+            "application_details": {
+              "$ref": "#/components/schemas/ApplicationRequest"
+            },
+            "mode": {
+              "type": "string",
+              "description": "Application mode"
+            },
+            "application_id": {
+              "type": "string",
+              "description": "Application ID"
+            },
+            "state": {
+              "type": "string",
+              "description": "Application state"
+            },
+            "start_time": {
+              "type": "string",
+              "description": "Application start time"
+            },
+            "finish_time": {
+              "type": "string",
+              "description": "Application end time"
+            }
+          }
+        },
+        "ApplicationCollection": {
+          "type": "object",
+          "description": "An array of application details",
+          "properties": {
+            "applications": {
+              "description": "List of applications",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ApplicationDetails"
+              }
+            }
+          }
+        },
+        "ApplicationDetails": {
+          "type": "object",
+          "description": "Details of an application",
+          "properties": {
+            "application_id": {
+              "type": "string",
+              "description": "Identifier of the application"
+            },
+            "spark_application_id": {
+              "type": "string",
+              "description": "Identifier of the Spark application"
+            },
+            "state": {
+              "type": "string",
+              "description": "Status of the application"
+            },
+            "start_time": {
+              "type": "string",
+              "description": "Time when the application was started."
+            },
+            "finish_time": {
+              "type": "string",
+              "description": "Time when the application was completed."
+            }
+          }
+        },
+        "ApplicationGetStateResponse": {
+          "type": "object",
+          "description": "State of a given application.",
+          "properties": {
+            "application_id": {
+              "type": "string",
+              "description": "Identifier of the application"
+            },
+            "state": {
+              "type": "string",
+              "description": "Status of the application."
+            },
+            "start_time": {
+              "type": "string",
+              "description": "Time when the application was started."
+            },
+            "finish_time": {
+              "type": "string",
+              "description": "Time when the application was completed."
+            }
+          }
+        }
+      }
+    }
+  }

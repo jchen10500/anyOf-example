@@ -1,0 +1,3004 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "The IBM&reg; Cloud Pak for Data Platform API connects to your Cloud Pak for Data deployment, so you can manage users and user roles.",
+      "title": "IBM Cloud Pak for Data Platform API",
+      "license": {
+        "name": "IBM"
+      },
+      "version": "1.0.0",
+      "x-sdk-supported-languages": [],
+      "x-last-updated": "2020-09-02"
+    },
+    "paths": {
+      "/v1/authorize": {
+        "post": {
+          "description": "Generate a bearer token from your Cloud Pak for Data credentials.",
+          "tags": [
+            "Authorization"
+          ],
+          "summary": "Get authorization token",
+          "operationId": "getAuthorizationToken",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loginCredentials"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/loginResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success",
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X POST \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/authorize \\\n-H 'cache-control: no-cache' \\\n-H 'content-type: application/json' \\\n-d '{\"username\":\"{USERNAME}\",\"password\":\"{PASSWORD}\"}'\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nMediaType mediaType = MediaType.parse(\"application/json\");\nRequestBody body = RequestBody.create(mediaType, \"{\\\"username\\\":\\\"{USERNAME}\\\",\\\"password\\\":\\\"{PASSWORD}\\\"}\");\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/authorize\")\n  .post(body)\n  .addHeader(\"content-type\", \"application/json\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/authorize\",\n  \"method\": \"POST\",\n  \"headers\": {\n    \"content-type\": \"application/json\",\n    \"cache-control\": \"no-cache\"\n  },\n  \"processData\": false,\n  \"data\": \"{\\\"username\\\":\\\"{USERNAME}\\\",\\\"password\\\":\\\"{PASSWORD}\\\"}\"\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\npayload = \"{\\\"username\\\":\\\"{USERNAME}\\\",\\\"password\\\":\\\"{PASSWORD}\\\"}\"\nheaders = {\n    'content-type': \"application/json\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"POST\", \"/icp4d-api/v1/authorize\", payload, headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X POST -H \"cache-control: no-cache\" -H \"Content-Type: application/json\" -d \"{\\\"username\\\":\\\"{username}\\\",\\\"password\\\":\\\"{password}\\\"}\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/authorize\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "x-sdk-exclude": false
+        }
+      },
+      "/v1/changepassword": {
+        "post": {
+          "description": "Change the logged in user's password.",
+          "tags": [
+            "Account management"
+          ],
+          "summary": "Change my password",
+          "operationId": "changePassword",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "current_password": {
+                      "description": "Current password.",
+                      "type": "string"
+                    },
+                    "new_password": {
+                      "description": "New password.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "current_password",
+                    "new_password"
+                  ]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/successResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X POST \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/changepassword \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n-H 'content-type: application/json' \\\n-F current_password={CURRENT_PASSWORD} \\\n-F new_password={NEW_PASSWORD}\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nMediaType mediaType = MediaType.parse(\"application/json\");\nRequestBody body = RequestBody.create(mediaType, \"{\\n\\t\\\"current_password\\\":\\\"{CURRENT_PASSWORD}\\\",\\n\\t\\\"new_password\\\":\\\"{NEW_PASSWORD}\\\"\\n}\");\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/changepassword\")\n  .post(body)\n  .addHeader(\"content-type\", \"application/json\")\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/changepassword\",\n  \"method\": \"POST\",\n  \"headers\": {\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  },\n  \"processData\": false,\n  \"data\": \"{\\n\\t\\\"current_password\\\":\\\"{CURRENT_PASSWORD}\\\",\\n\\t\\\"new_password\\\":\\\"{NEW_PASSWORD}\\\"\\n}\"\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\npayload = \"{\\n\\t\\\"current_password\\\":\\\"{CURRENT_PASSWORD}\\\",\\n\\t\\\"new_password\\\":\\\"{NEW_PASSWORD}\\\"\\n}\"\nheaders = {\n    'content-type': \"application/json\",\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"POST\", \"/icp4d-api/v1/changepassword\", payload, headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X POST -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" -d \"{\\\"current_password\\\":\\\"{CURRENT_PASSWORD}\\\", \\\"new_password\\\":\\\"{NEW_PASSWORD}\\\"}\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/changepassword\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "/v1/me": {
+        "get": {
+          "description": "Get details about the logged in user.",
+          "tags": [
+            "Account management"
+          ],
+          "summary": "Get my account information",
+          "operationId": "getMe",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/getMeResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success",
+                        "UsersInfo": [
+                          {
+                            "displayName": "admin",
+                            "email": "admin@example.com",
+                            "permissions": [
+                              "string"
+                            ],
+                            "role": "admin",
+                            "uid": "1001",
+                            "username": "Admin"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X GET \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/me \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/me\")\n  .get()\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/me\",\n  \"method\": \"GET\",\n  \"headers\": {\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  }\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\nheaders = {\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"GET\", \"/icp4d-api/v1/me\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X GET -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/me\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "put": {
+          "description": "Update the display name or email address for the logged in user.",
+          "tags": [
+            "Account management"
+          ],
+          "summary": "Update my information",
+          "operationId": "updateMe",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/updateMeParamsBody"
+                }
+              }
+            },
+            "description": "The updated user information."
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/successResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X PUT \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/me\\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n-H 'content-type: application/json' \\\n-d '{\n\"displayName\":\"{DISPLAY_NAME}\",\n\"email\":\"{EMAIL}\",\n}'\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nMediaType mediaType = MediaType.parse(\"application/json\");\nRequestBody body = RequestBody.create(mediaType, \"{\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\",\\n}\");\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/me\")\n  .put(body)\n  .addHeader(\"content-type\", \"application/json\")\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/me\",\n  \"method\": \"PUT\",\n  \"headers\": {\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  },\n  \"processData\": false,\n  \"data\": \"{\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\"\\n}\";\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\npayload = \"{\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\"\\n}\";\nheaders = {\n    'content-type': \"application/json\",\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"PUT\", \"/icp4d-api/v1/me\", payload, headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X PUT -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" -d \"{\\\"displayName\\\":\\\"{display_name \\\",\\\"email\\\":\\\"{email}\\\"}\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/me\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "/v1/monitor": {
+        "get": {
+          "description": "Indicates whether your Cloud Pak for Data API server is running. is running",
+          "tags": [
+            "Monitor"
+          ],
+          "summary": "Check server status",
+          "operationId": "getMonitor",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/successResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "default": {
+              "description": "Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X GET -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" -d \"{\\\"displayName\\\":\\\"{display_name \\\",\\\"email\\\":\\\"{email}\\\"}\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/monitor\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "/v1/roles": {
+        "get": {
+          "description": "Returns the user roles in the cluster.",
+          "tags": [
+            "Role management"
+          ],
+          "summary": "List all roles",
+          "operationId": "getAllRoles",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/getAllRolesResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success",
+                        "Roles": {
+                          "ID": "zen_administrator_role",
+                          "description": "Administrator role",
+                          "permissions": [
+                            "string"
+                          ],
+                          "role_name": "Administrator"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X GET \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles)\n  .get()\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles\",\n  \"method\": \"GET\",\n  \"headers\": {\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  }\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\nheaders = {\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"GET\", \"/icp4d-api/v1/roles\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X GET -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/roles\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "post": {
+          "description": "If the provided roles do not meet your needs, you can create other roles.",
+          "tags": [
+            "Role management"
+          ],
+          "summary": "Create role",
+          "operationId": "createRole",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/createRoleParamsBody"
+                }
+              }
+            },
+            "description": "Information for creating a role"
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/successResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X POST \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n-H 'content-type: application/json' \\\n-d '{\n\"role_name\":\"{ROLE_NAME}\",\n\"description\":\"{ROLE_DESCRIPTION}\",\n\"permissions\":\"{PERMISSIONS}\"\n}'\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nMediaType mediaType = MediaType.parse(\"application/json\");\nRequestBody body = RequestBody.create(mediaType, \"{\\n\\t\\\"role_name\\\":\\\"{ROLE_NAME}\\\",\\n\\t\\\"description\\\":\\\"{ROLE_DESCRIPTION}\\\",\\n\\t\\\"permissions\\\":\\\"{PERMISSIONS}\\\"\\n}\";\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles\")\n  .post(body)\n  .addHeader(\"content-type\", \"application/json\")\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles\",\n  \"method\": \"POST\",\n  \"headers\": {\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  },\n  \"processData\": false,\n  \"data\": \"{\\n\\t\\\"role_name\\\":\\\"{ROLE_NAME}\\\",\\n\\t\\\"description\\\":\\\"{ROLE_DESCRIPTION}\\\",\\n\\t\\\"permissions\\\":\\\"{PERMISSIONS}\\\"\\n}\"\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\npayload = \"{\\n\\t\\\"role_name\\\":\\\"{ROLE_NAME}\\\",\\n\\t\\\"description\\\":\\\"{ROLE_DESCRIPTION}\\\",\\n\\t\\\"permissions\\\":\\\"{PERMISSIONS}\\\"\\n}\"\nheaders = {\n    'content-type': \"application/json\",\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"POST\", \"/icp4d-api/v1/roles\", payload, headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X POST -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" -d \"{\\\"role_name\\\":\\\"{name}\\\",\\\"description\\\":\\\"{description}\\\",\\\"permissions\\\":\\\"{permissions}\\\"}\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/roles\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "/v1/roles/{role_id}": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "description": "The identifier of the role.",
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "get": {
+          "description": "Get details about one role.",
+          "tags": [
+            "Role management"
+          ],
+          "summary": "Get role information",
+          "operationId": "getRole",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/getRoleResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success",
+                        "RoleInfo": {
+                          "ID": "zen_administrator_role",
+                          "description": "Administrator role",
+                          "permissions": [
+                            "string"
+                          ],
+                          "role_name": "Administrator"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X GET \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles/{role_id} \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles/{role_id}\")\n  .get()\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles/{role_id}\",\n  \"method\": \"GET\",\n  \"headers\": {\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  }\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\nheaders = {\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"GET\", \"/icp4d-api/v1/roles/{role_id}\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X GET -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/roles/{role_id}\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "put": {
+          "description": "Update the name, description, and permissions associated with a role.",
+          "tags": [
+            "Role management"
+          ],
+          "summary": "Update role",
+          "operationId": "updateRole",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/updateRoleParamsBody"
+                }
+              }
+            },
+            "description": "The updated role information."
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/successResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X PUT \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles/{role_id} \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n-H 'content-type: application/json' \\\n-d '{\n\"role_name\":\"{ROLE_NAME}\",\n\"description\":\"{ROLE_DESCRIPTION}\",\n\"permissions\":\"{PERMISSIONS}\"\n}'\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nMediaType mediaType = MediaType.parse(\"application/json\");\nRequestBody body = RequestBody.create(mediaType, \"{\\n\\t\\\"role_name\\\":\\\"{ROLE_NAME}\\\",\\n\\t\\\"description\\\":\\\"{ROLE_DESCRIPTION}\\\",\\n\\t\\\"permissions\\\":\\\"{PERMISSIONS}\\\"\\n}\");\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles/{role_id}\")\n  .put(body)\n  .addHeader(\"content-type\", \"application/json\")\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/roles/{role_id}\",\n  \"method\": \"PUT\",\n  \"headers\": {\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  },\n  \"processData\": false,\n  \"data\": \"{\\n\\t\\\"role_name\\\":\\\"{ROLE_NAME}\\\",\\n\\t\\\"description\\\":\\\"{ROLE_DESCRIPTION}\\\",\\n\\t\\\"permissions\\\":\\\"{PERMISSIONS}\\\"\\n}\"\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\npayload = \"{\\n\\t\\\"role_name\\\":\\\"{ROLE_NAME}\\\",\\n\\t\\\"description\\\":\\\"{ROLE_DESCRIPTION}\\\",\\n\\t\\\"permissions\\\":\\\"{PERMISSIONS}\\\"\\n}\"\nheaders = {\n    'content-type': \"application/json\",\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"PUT\", \"/icp4d-api/v1/roles/{role_id}\", payload, headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X PUT -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" -d \"{\\\"role_name\\\":\\\"{role_name}\\\",\\\"description\\\":\\\"{role_description}\\\",\\\"permissions\\\":\\\"{permissions}\\\"}\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/roles/{role_id}\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "delete": {
+          "description": "Delete a role from the cluster.",
+          "tags": [
+            "Role management"
+          ],
+          "summary": "Delete role",
+          "operationId": "deleteRole",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/successResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X DELETE \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/role/{role_id} \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/role/{role_id}\")\n  .delete(null)\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/role/{role_id}\",\n  \"method\": \"DELETE\",\n  \"headers\": {\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  }\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\nheaders = {\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"DELETE\", \"/icp4d-api/v1/role/{role_id}\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X DELETE -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/roles/{role_id}\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "/v1/permissions": {
+        "get": {
+          "description": "Returns all permissions in the cluster.",
+          "tags": [
+            "Role management"
+          ],
+          "summary": "List all permissions",
+          "operationId": "getAllPermissions",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/getPermissionsResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success",
+                        "Permissions": []
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X GET \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/permissions \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/permissions)\n  .get()\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/permissions\",\n  \"method\": \"GET\",\n  \"headers\": {\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  }\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\nheaders = {\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"GET\", \"/icp4d-api/v1/permissions\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X GET -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/permissions\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "/v1/users": {
+        "get": {
+          "description": "Returns all users in the cluster.",
+          "tags": [
+            "User management"
+          ],
+          "summary": "Get all users",
+          "operationId": "getAllUsers",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/getAllUsersResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success",
+                        "UsersInfo": [
+                          {
+                            "approval_status": "approved",
+                            "authenticator": "default",
+                            "created_timestamp": "2018-10-08T21:53:14.855Z",
+                            "current_account_status": "enabled",
+                            "displayName": "admin",
+                            "email": "admin@example.com",
+                            "last_modified_timestamp": "2018-10-08T21:53:14.855Z",
+                            "permissions": [
+                              "string"
+                            ],
+                            "role": "Admin",
+                            "uid": "1001",
+                            "user_roles": [
+                              "string"
+                            ],
+                            "username": "Admin"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X GET \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users)\n  .get()\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users\",\n  \"method\": \"GET\",\n  \"headers\": {\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  }\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\nheaders = {\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"GET\", \"/icp4d-api/v1/users\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X GET -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/users\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "post": {
+          "description": "Create a user account for the cluster.",
+          "tags": [
+            "User management"
+          ],
+          "summary": "Create user",
+          "operationId": "createUser",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/createUserParamsBody"
+                }
+              }
+            },
+            "description": "The new user."
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/createUserSuccessResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success",
+                        "User": {
+                          "ID": "1001"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X POST \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n-H 'content-type: application/json' \\\n-d '{\n\"user_name\":\"{USER_NAME}\",\n\"password\":\"{PASSWORD}\",\n\"displayName\":\"{DISPLAY_NAME}\",\n\"user_roles\":\"{USER_ROLES}\",\n\"email\":\"{EMAIL}\"\n}'\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nMediaType mediaType = MediaType.parse(\"application/json\");\nRequestBody body = RequestBody.create(mediaType, \"{\\n\\t\\\"user_name\\\":\\\"{USER_NAME}\\\",\\n\\t\\\"password\\\":\\\"{PASSWORD}\\\",\\n\\t\\\"user_roles\\\":\\\"{USER_ROLES}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\",\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\"\\n}\");\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users\")\n  .post(body)\n  .addHeader(\"content-type\", \"application/json\")\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users\",\n  \"method\": \"POST\",\n  \"headers\": {\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  },\n  \"processData\": false,\n  \"data\": \"{\\n\\t\\\"user_name\\\":\\\"{USER_NAME}\\\",\\n\\t\\\"password\\\":\\\"{PASSWORD}\\\",\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\",\\n\\t\\\"user_roles\\\":\\\"{USER_ROLES}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\"\\n}\";\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\npayload = \"{\\n\\t\\\"user_name\\\":\\\"{USER_NAME}\\\",\\n\\t\\\"password\\\":\\\"{PASSWORD}\\\",\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\",\\n\\t\\\"user_roles\\\":\\\"{USER_ROLES}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\"\\n}\"\nheaders = {\n    'content-type': \"application/json\",\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"POST\", \"/icp4d-api/v1/users\", payload, headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X POST -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" -d \"{\\\"user_name\\\":\\\"{username}\\\",\\\"password\\\":\\\"{password}\\\",\\\"displayName\\\":\\\"{display_name}\\\",\\\"user_roles\\\":\\\"{user_roles}\\\",\\\"email\\\":\\\"{email}\\\"}\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/users\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "/v1/users/{user_name}": {
+        "get": {
+          "description": "Get details about one user.",
+          "tags": [
+            "User management"
+          ],
+          "summary": "Get user information",
+          "operationId": "getUser",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            },
+            {
+              "description": "The user name.",
+              "name": "user_name",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/getUserResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success",
+                        "UserInfo": {
+                          "approval_status": "approved",
+                          "authenticator": "default",
+                          "created_timestamp": "2018-10-08T21:53:14.855Z",
+                          "current_account_status": "enabled",
+                          "displayName": "admin",
+                          "email": "admin@example.com",
+                          "last_modified_timestamp": "2018-10-08T21:53:14.855Z",
+                          "permissions": [
+                            "string"
+                          ],
+                          "role": "Admin",
+                          "uid": "1001",
+                          "user_roles": [
+                            "string"
+                          ],
+                          "username": "Admin"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X GET \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users/{user_name} \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users/{user_name}\")\n  .get()\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users/{user_name}\",\n  \"method\": \"GET\",\n  \"headers\": {\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  }\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\nheaders = {\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"GET\", \"/icp4d-api/v1/users/{user_name}\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X GET -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/users/{user_name}\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "put": {
+          "description": "Update information about a user account.",
+          "tags": [
+            "User management"
+          ],
+          "summary": "Update user details",
+          "operationId": "updateUser",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            },
+            {
+              "description": "The user name.",
+              "name": "user_name",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/updateUserParamsBody"
+                }
+              }
+            },
+            "description": "The updated user information."
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/successResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X PUT \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users/{user_name} \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n-H 'content-type: application/json' \\\n-d '{\n\"user_name\":\"{USER_NAME}\",\n\"displayName\":\"{DISPLAY_NAME}\",\n\"user_roles\":\"{USER_ROLES}\",\n\"email\":\"{EMAIL}\"\n}'\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nMediaType mediaType = MediaType.parse(\"application/json\");\nRequestBody body = RequestBody.create(mediaType, \"{\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\",\\n\\t\\\"user_roles\\\":\\\"{USER_ROLES}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\",\\n}\");\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/user/{user_name}\")\n  .put(body)\n  .addHeader(\"content-type\", \"application/json\")\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/user/{user_name}\",\n  \"method\": \"PUT\",\n  \"headers\": {\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  },\n  \"processData\": false,\n  \"data\": \"{\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\",\\n\\t\\\"user_roles\\\":\\\"{USER_ROLES}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\",\\n}\"\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\npayload = \"{\\n\\t\\\"displayName\\\":\\\"{DISPLAY_NAME}\\\",\\n\\t\\\"user_roles\\\":\\\"{USER_ROLES}\\\",\\n\\t\\\"email\\\":\\\"{EMAIL}\\\",\\n}\"\nheaders = {\n    'content-type': \"application/json\",\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"PUT\", \"/icp4d-api/v1/user/{user_name}\", payload, headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X PUT -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" -d \"{\\\"displayName\\\":\\\"{display_name}\\\", \\\"user_roles\\\":\\\"{user_roles}\\\", \\\"email\\\":\\\"{email}\\\"}\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/users/{user_name}\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "delete": {
+          "description": "Delete a user from the cluster.",
+          "tags": [
+            "User management"
+          ],
+          "summary": "Delete user",
+          "operationId": "deleteUser",
+          "parameters": [
+            {
+              "$ref": "#/components/parameters/authorization"
+            },
+            {
+              "description": "The user name.",
+              "name": "user_name",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/successResponse"
+                  },
+                  "examples": {
+                    "response": {
+                      "value": {
+                        "_messageCode_": "200",
+                        "message": "Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorResponse"
+                  }
+                }
+              }
+            }
+          },
+          "x-code-samples": [
+            {
+              "lang": "Curl",
+              "source": "curl -k -X DELETE \\\nhttps://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users/{user_name} \\\n-H 'authorization: Bearer {AUTH_TOKEN}' \\\n-H 'cache-control: no-cache' \\\n"
+            },
+            {
+              "lang": "Java",
+              "source": "OkHttpClient client = new OkHttpClient();\nRequest request = new Request.Builder()\n  .url(\"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users/{user_name}\")\n  .delete(null)\n  .addHeader(\"authorization\", \"Bearer {AUTH_TOKEN}\")\n  .addHeader(\"cache-control\", \"no-cache\")\n  .build();\nResponse response = client.newCall(request).execute();\n"
+            },
+            {
+              "lang": "Javascript",
+              "source": "var settings = {\n  \"async\": true,\n  \"crossDomain\": true,\n  \"url\": \"https://{HOSTNAME}:{PORT_NUMBER}/icp4d-api/v1/users/{user_name}\",\n  \"method\": \"DELETE\",\n  \"headers\": {\n    \"authorization\": \"Bearer {AUTH_TOKEN}\",\n    \"cache-control\": \"no-cache\",\n  }\n}\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n"
+            },
+            {
+              "lang": "Python",
+              "source": "import http.client\nimport ssl\nconn = http.client.HTTPSConnection(\n  \"{HOSTNAME}:{PORT_NUMBER}\",\n  context = ssl._create_unverified_context()\n)\nheaders = {\n    'authorization': \"Bearer {AUTH_TOKEN}\",\n    'cache-control': \"no-cache\",\n    }\nconn.request(\"DELETE\", \"/icp4d-api/v1/users/{user_name}\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))\n"
+            }
+          ],
+          "x-sdk-operations": {
+            "request-examples": {
+              "curl": [
+                {
+                  "name": "Example request",
+                  "example": [
+                    {
+                      "type": "code",
+                      "source": [
+                        "curl -k -X DELETE -H \"Authorization: Bearer {token}\" -H \"cache-control: no-cache\" \"https://{cpd_cluster_host}{:port}/icp4d-api/v1/users/{user_name}\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "/ae/{instance_id}/v2/jobs": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/instance"
+          }
+        ],
+        "get": {
+          "summary": "List the JSON data for all currently running jobs for a instance",
+          "tags": [
+            "jobs"
+          ],
+          "responses": {
+            "200": {
+              "description": "List of running jobs",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/JobResponse"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Instance id or api key not provided in the header",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Instance id or api key  provided but not authorized to create instance",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error occured",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "504": {
+              "description": "Job creation timed out",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Start a job and return the uuid",
+          "tags": [
+            "jobs"
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "Required job details"
+          },
+          "responses": {
+            "201": {
+              "description": "The metadata about the newly created job.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/JobResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Instance id or api key not provided in the header",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Instance id or api key  provided but not authorized to create instance",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error occured",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "504": {
+              "description": "Job creation timed out",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ae/{instance_id}/v2/jobs/{job_id}": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/instance"
+          },
+          {
+            "$ref": "#/components/parameters/job"
+          }
+        ],
+        "get": {
+          "summary": "Get the JSON data for a job",
+          "tags": [
+            "jobs"
+          ],
+          "responses": {
+            "200": {
+              "description": "Get state of a job",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/JobResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Instance id or job id  not valid",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Instance id or api key not provided in the header",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Instance id or api key  provided but not authorized to create instance",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error occured",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "504": {
+              "description": "Job creation timed out",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "summary": "Kill a job",
+          "tags": [
+            "jobs"
+          ],
+          "responses": {
+            "204": {
+              "description": "Job deleted"
+            },
+            "401": {
+              "description": "Instance id or api key not provided in the header",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Instance id or api key  provided but not authorized to create instance",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Job id not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal error occured",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "504": {
+              "description": "Job deletion timed out",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tags": [
+      {
+        "description": "ICP4D platform login\n",
+        "name": "Authorization"
+      },
+      {
+        "description": "Manage Users in the ICPD cluster\n",
+        "name": "User management"
+      },
+      {
+        "description": "Manage roles in the ICPD cluster. Security in ICPD is based on roles. A role is a group of permissions that control the actions you can perform in ICPD. You can create customized roles, assign permissions to customized roles, or you can assign more permissions to existing default roles. You can also assign users and user groups to existing default roles or to customized roles. Permissions are cumulative, a user or user group is assigned all the permissions for all the roles they are assigned to.\n",
+        "name": "Role management"
+      },
+      {
+        "description": "Manage logged in user information, operations allow you to retrieve or update user information and change logged in user password\n",
+        "name": "Account management"
+      },
+      {
+        "description": "When you need to bring metadata from other products into the catalog, you can dynamically register the additional asset types in the catalog. The group of asset types from a single product or tool is called an asset type bundle.\n",
+        "name": "Monitor"
+      },
+      {
+        "description": "The Git integration provides a flexible source code management method to track, back up, and collaborate on a project with multiple users. Collaborators in Git and in ICPD can push their changes to the repository so that everyone has access to the changes.\n",
+        "name": "Git Actions"
+      },
+      {
+        "description": "The API for Spark jobs\n",
+        "name": "jobs"
+      }
+    ],
+    "x-tagGroups": [
+      {
+        "name": "Platform",
+        "tags": [
+          "Authorization",
+          "User management",
+          "Role management",
+          "Account management"
+        ]
+      },
+      {
+        "name": "Server",
+        "tags": [
+          "Monitor"
+        ]
+      }
+    ],
+    "servers": [
+      {
+        "url": "/icp4d-api/"
+      }
+    ],
+    "components": {
+      "parameters": {
+        "job": {
+          "name": "job_id",
+          "required": true,
+          "in": "path",
+          "description": "job uuid",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "instance": {
+          "name": "instance_id",
+          "required": true,
+          "in": "path",
+          "description": "instance id",
+          "schema": {
+            "type": "string",
+            "format": "id"
+          }
+        },
+        "authorization": {
+          "name": "Authorization",
+          "in": "header",
+          "description": "The bearer token associated with a user name.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      },
+      "requestBodies": {
+        "updateAssetBundle": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "description": "File",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "schemas": {
+        "Error": {
+          "description": "An error response from the server",
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "description": "The reason for the failure"
+            },
+            "message": {
+              "type": "string",
+              "description": "The message logged when the error occurred"
+            }
+          }
+        },
+        "Engine": {
+          "description": "(Optional) - Runtime Engine information. Either environment or Engine needs to be provided but not both.",
+          "required": [
+            "type",
+            "template_id",
+            "size"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "Value of this will be spark"
+            },
+            "template_id": {
+              "type": "string",
+              "description": "template to be used for engine. e.g. spark-2.3.0-jaas-v2-template"
+            },
+            "conf": {
+              "type": "object",
+              "description": "Spark configuration to be passed to engine as key value pair"
+            },
+            "env": {
+              "type": "object",
+              "description": "ENV varibles to be set in engine as key value pair"
+            },
+            "mountPaths": {
+              "type": "array",
+              "description": "a list of pvcs to mount in spark cluster",
+              "items": {
+                "$ref": "#/components/schemas/MountPath"
+              }
+            },
+            "size": {
+              "type": "object",
+              "description": "Optional - Engine size in term of executor and driver size.",
+              "properties": {
+                "driver_size": {
+                  "$ref": "#/components/schemas/DriverSize"
+                },
+                "num_workers": {
+                  "type": "string",
+                  "description": "number of workers/ executor to be started"
+                },
+                "worker_size": {
+                  "$ref": "#/components/schemas/ExecutorSize"
+                }
+              }
+            }
+          }
+        },
+        "MountPath": {
+          "description": "pvc mount paths",
+          "required": [
+            "name",
+            "path",
+            "mountPath"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "name of the pvc"
+            },
+            "path": {
+              "type": "string",
+              "description": "path inside the pvc to mount"
+            },
+            "mountPath": {
+              "type": "string",
+              "description": "the path where the pvc is mounted inside the spark cluster"
+            }
+          }
+        },
+        "DriverSize": {
+          "description": "Driver size in terms of cpu and memory",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "type": "string",
+              "description": "number of cores for driver"
+            },
+            "memory": {
+              "type": "string",
+              "description": "driver memory e.g 1g"
+            }
+          }
+        },
+        "ExecutorSize": {
+          "description": "Executor size in terms of cpu and memory",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "type": "string",
+              "description": "number of cores for executor"
+            },
+            "memory": {
+              "type": "string",
+              "description": "executor memory e.g 1g"
+            }
+          }
+        },
+        "EngineSize": {
+          "description": "Runtime Engine information",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "type": "string",
+              "description": "number of cores for executor/driver"
+            },
+            "memory": {
+              "type": "string",
+              "description": "executor/driver memory e.g 1g"
+            }
+          }
+        },
+        "Job": {
+          "description": "Job detail response",
+          "required": [
+            "application_jar",
+            "application_arguments",
+            "main_class"
+          ],
+          "properties": {
+            "environment": {
+              "type": "string",
+              "description": "(Optional) Id of Watson Studio Enviornment that represents the Engine(cluster) definition. Either environment or Engine needs to be provided but not both."
+            },
+            "application_arguments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of string arguments for spark application"
+            },
+            "application_jar": {
+              "type": "string",
+              "description": "In case of Scala it is the path to jar containing the Main class and in case of python/R it is the path to the script file"
+            },
+            "main_class": {
+              "type": "string",
+              "description": "In case of scala the Main class of your application else org.apache.spark.deploy.SparkSubmit"
+            },
+            "engine": {
+              "$ref": "#/components/schemas/Engine"
+            },
+            "instance_home": {
+              "type": "object",
+              "description": "(Optional) These parameters are passed when user want to give home_volume details",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Supported value is cos."
+                },
+                "cos_bucket_details": {
+                  "type": "object",
+                  "properties": {
+                    "resource_instance_id": {
+                      "type": "string",
+                      "description": "crn of the cos instance to be used"
+                    },
+                    "region": {
+                      "type": "string",
+                      "description": "cos bucket's region"
+                    },
+                    "apikey": {
+                      "type": "string",
+                      "description": "cos instance's api key to connect"
+                    },
+                    "bucket": {
+                      "type": "string",
+                      "description": "cos bucket's to be used as instance home"
+                    },
+                    "cos_hmac_keys": {
+                      "type": "object",
+                      "description": "HMAC style keys to connect",
+                      "properties": {
+                        "access_key_id": {
+                          "type": "string",
+                          "description": "access_key_id for cos"
+                        },
+                        "secret_access_key": {
+                          "type": "string",
+                          "description": "secret_access_key to connect"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "JobResponse": {
+          "description": "Job detail response",
+          "required": [
+            "id",
+            "job_state"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "uuid of job"
+            },
+            "name": {
+              "type": "string",
+              "description": "Job state"
+            }
+          }
+        },
+        "baseError": {
+          "type": "object",
+          "properties": {
+            "_messageCode_": {
+              "description": "The identifier of the response.",
+              "type": "string"
+            },
+            "message": {
+              "description": "The explanation of the `_messageCode_`.",
+              "type": "string"
+            }
+          }
+        },
+        "createRoleParamsBody": {
+          "type": "object",
+          "required": [
+            "role_name",
+            "permissions"
+          ],
+          "properties": {
+            "description": {
+              "description": "Description of the role.",
+              "type": "string"
+            },
+            "permissions": {
+              "description": "The permissions associated with the role.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role_name": {
+              "description": "Name for the role.",
+              "type": "string"
+            }
+          },
+          "example": {
+            "description": "string",
+            "permissions": [
+              "string"
+            ],
+            "role_name": "string"
+          },
+          "x-go-gen-location": "operations"
+        },
+        "createUserParamsBody": {
+          "type": "object",
+          "required": [
+            "user_name",
+            "displayName",
+            "user_roles",
+            "email",
+            "password"
+          ],
+          "properties": {
+            "displayName": {
+              "description": "The name that is displayed for this user.",
+              "type": "string"
+            },
+            "email": {
+              "description": "The user's email address.",
+              "type": "string"
+            },
+            "user_name": {
+              "description": "The user name.",
+              "type": "string"
+            },
+            "password": {
+              "type": "string",
+              "description": "The password"
+            },
+            "user_roles": {
+              "description": "The roles assigned to the user.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "displayName": "Admin",
+            "email": "user@example.com",
+            "user_name": "admin",
+            "password": "password",
+            "user_roles": [
+              "string"
+            ]
+          },
+          "x-go-gen-location": "operations"
+        },
+        "createUserSuccessResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/createUserSuccessResponseAllOf0"
+            },
+            {
+              "$ref": "#/components/schemas/createUserSuccessResponseAllOf1"
+            }
+          ]
+        },
+        "createUserSuccessResponseAllOf0": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "x-go-gen-location": "models"
+        },
+        "createUserSuccessResponseAllOf1": {
+          "properties": {
+            "User": {
+              "$ref": "#/components/schemas/createUserSuccessResponseAllOf1User"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "createUserSuccessResponseAllOf1User": {
+          "type": "object",
+          "properties": {
+            "ID": {
+              "description": "The user name.",
+              "type": "string",
+              "example": "admin"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "errorResponse": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "properties": {
+            "_messageCode_": {
+              "description": "error code",
+              "type": "string"
+            },
+            "_statusCode_": {
+              "description": "The HTTP response code",
+              "type": "integer",
+              "format": "int32"
+            },
+            "exception": {
+              "description": "An explanation of the problem.",
+              "type": "string"
+            },
+            "message": {
+              "description": "The error message.",
+              "type": "string"
+            }
+          }
+        },
+        "getAllRolesResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/getAllRolesResponseAllOf0"
+            },
+            {
+              "$ref": "#/components/schemas/getAllRolesResponseAllOf1"
+            }
+          ]
+        },
+        "getAllRolesResponseAllOf0": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "properties": {
+            "_messageCode_": {
+              "description": "message code",
+              "type": "string",
+              "example": "200"
+            },
+            "message": {
+              "description": "message",
+              "type": "string",
+              "example": "Success"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getAllRolesResponseAllOf1": {
+          "properties": {
+            "Roles": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/getAllRolesResponseAllOf1RolesItems"
+              }
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getAllRolesResponseAllOf1RolesItems": {
+          "type": "object",
+          "properties": {
+            "ID": {
+              "description": "The unique identifier of the role.",
+              "type": "string",
+              "example": "zen_administrator_role"
+            },
+            "description": {
+              "description": "Description of the role.",
+              "type": "string",
+              "example": "Administrator role"
+            },
+            "permissions": {
+              "description": "The permissions associated with the role.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role_name": {
+              "description": "Name for the role.",
+              "type": "string",
+              "example": "Administrator"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getAllUsersResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/getAllUsersResponseAllOf0"
+            },
+            {
+              "$ref": "#/components/schemas/getAllUsersResponseAllOf1"
+            }
+          ]
+        },
+        "getAllUsersResponseAllOf0": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "x-go-gen-location": "models"
+        },
+        "getAllUsersResponseAllOf1": {
+          "properties": {
+            "UsersInfo": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/getAllUsersResponseAllOf1UsersInfoItems"
+              }
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getAllUsersResponseAllOf1UsersInfoItems": {
+          "type": "object",
+          "properties": {
+            "approval_status": {
+              "description": "The status of the user's access to the web client.",
+              "type": "string",
+              "example": "approved"
+            },
+            "authenticator": {
+              "description": "The authenticator for the user.",
+              "type": "string",
+              "example": "default"
+            },
+            "created_timestamp": {
+              "description": "The date and time that the user account was created.",
+              "type": "string",
+              "example": "2018-10-08T21:53:14.855Z"
+            },
+            "current_account_status": {
+              "description": "The current status of the user's account.",
+              "type": "string",
+              "example": "enabled"
+            },
+            "displayName": {
+              "description": "The name that is displayed for this user.",
+              "type": "string",
+              "example": "admin"
+            },
+            "email": {
+              "description": "The user's email address.",
+              "type": "string",
+              "example": "approved"
+            },
+            "last_modified_timestamp": {
+              "description": "The date and time the account was last modified.",
+              "type": "string",
+              "example": "2018-10-08T21:53:14.855Z"
+            },
+            "permissions": {
+              "description": "The permissions associated with the user.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role": {
+              "description": "The role assigned to the user.",
+              "type": "string",
+              "example": "admin"
+            },
+            "uid": {
+              "description": "The unique identifier for the user.",
+              "type": "string",
+              "example": "1001"
+            },
+            "user_roles": {
+              "description": "The roles assigned to the user.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "username": {
+              "description": "The user name.",
+              "type": "string",
+              "example": "Admin"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getMeResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/getMeResponseAllOf0"
+            },
+            {
+              "$ref": "#/components/schemas/getMeResponseAllOf1"
+            }
+          ]
+        },
+        "getMeResponseAllOf0": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "x-go-gen-location": "models"
+        },
+        "getMeResponseAllOf1": {
+          "properties": {
+            "UserInfo": {
+              "$ref": "#/components/schemas/getMeResponseAllOf1UserInfo"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getMeResponseAllOf1UserInfo": {
+          "type": "object",
+          "properties": {
+            "displayName": {
+              "description": "The name that is displayed for this user.",
+              "type": "string",
+              "example": "admin"
+            },
+            "email": {
+              "description": "The user's email address.",
+              "type": "string",
+              "example": "approved"
+            },
+            "permissions": {
+              "description": "The permissions associated with the user.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role": {
+              "description": "The role assigned to the user.",
+              "type": "string",
+              "example": "admin"
+            },
+            "uid": {
+              "description": "The unique identifier for the user.",
+              "type": "string",
+              "example": "1001"
+            },
+            "username": {
+              "description": "The user name.",
+              "type": "string",
+              "example": "Admin"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getPermissionsResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/getPermissionsResponseAllOf0"
+            },
+            {
+              "$ref": "#/components/schemas/getPermissionsResponseAllOf1"
+            }
+          ]
+        },
+        "getPermissionsResponseAllOf0": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "x-go-gen-location": "models"
+        },
+        "getPermissionsResponseAllOf1": {
+          "properties": {
+            "Permissions": {
+              "description": "The array of permissions.",
+              "type": "array",
+              "default": [],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getRoleResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/getRoleResponseAllOf0"
+            },
+            {
+              "$ref": "#/components/schemas/getRoleResponseAllOf1"
+            }
+          ]
+        },
+        "getRoleResponseAllOf0": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "x-go-gen-location": "models"
+        },
+        "getRoleResponseAllOf1": {
+          "properties": {
+            "RoleInfo": {
+              "$ref": "#/components/schemas/getRoleResponseAllOf1RoleInfo"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getRoleResponseAllOf1RoleInfo": {
+          "type": "object",
+          "properties": {
+            "ID": {
+              "description": "The unique identifier of the role.",
+              "type": "string",
+              "example": "zen_administrator_role"
+            },
+            "description": {
+              "description": "The description of the role.",
+              "type": "string",
+              "example": "Administrator role"
+            },
+            "permissions": {
+              "description": "The permissions associated with the role.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role_name": {
+              "description": "Name for the role.",
+              "type": "string",
+              "example": "Administrator"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getUserResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/getUserResponseAllOf0"
+            },
+            {
+              "$ref": "#/components/schemas/getUserResponseAllOf1"
+            }
+          ]
+        },
+        "getUserResponseAllOf0": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "x-go-gen-location": "models"
+        },
+        "getUserResponseAllOf1": {
+          "properties": {
+            "UserInfo": {
+              "$ref": "#/components/schemas/getUserResponseAllOf1UserInfo"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "getUserResponseAllOf1UserInfo": {
+          "type": "object",
+          "properties": {
+            "approval_status": {
+              "description": "The status of the user's access to the web client.",
+              "type": "string",
+              "example": "approved"
+            },
+            "authenticator": {
+              "description": "The authenticator for the user.",
+              "type": "string",
+              "example": "default"
+            },
+            "created_timestamp": {
+              "description": "The date and time that the user account was created.",
+              "type": "string",
+              "example": "2018-10-08T21:53:14.855Z"
+            },
+            "current_account_status": {
+              "description": "The current status of the user's account.",
+              "type": "string",
+              "example": "enabled"
+            },
+            "displayName": {
+              "description": "The name that is displayed for this user.",
+              "type": "string",
+              "example": "admin"
+            },
+            "email": {
+              "description": "The user's email address.",
+              "type": "string",
+              "example": "approved"
+            },
+            "last_modified_timestamp": {
+              "description": "The date and time of the most recent failed attempt to log in.",
+              "type": "string",
+              "example": "2018-10-08T21:53:14.855Z"
+            },
+            "permissions": {
+              "description": "The permissions associated with the user.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role": {
+              "description": "The role assigned to the user.",
+              "type": "string",
+              "example": "admin"
+            },
+            "uid": {
+              "description": "The unique identifier for the user.",
+              "type": "string",
+              "example": "1001"
+            },
+            "user_roles": {
+              "description": "The roles assigned to the user.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "username": {
+              "description": "The user name.",
+              "type": "string",
+              "example": "Admin"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "loginCredentials": {
+          "type": "object",
+          "required": [
+            "username"
+          ],
+          "properties": {
+            "username": {
+              "type": "string",
+              "description": "IBM Cloud Pak for Data username."
+            },
+            "password": {
+              "type": "string",
+              "description": "IBM Cloud Pak for Data password."
+            },
+            "api_key": {
+              "type": "string",
+              "description": "IBM Cloud Pak for Data API key."
+            }
+          }
+        },
+        "loginResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/loginResponseAllOf0"
+            },
+            {
+              "$ref": "#/components/schemas/loginResponseAllOf1"
+            }
+          ]
+        },
+        "loginResponseAllOf0": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "x-go-gen-location": "models"
+        },
+        "loginResponseAllOf1": {
+          "properties": {
+            "token": {
+              "description": "The bearer token associated with a user name.",
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "successResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ]
+        },
+        "typesSuccessResponse": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            },
+            {
+              "$ref": "#/components/schemas/typesSuccessResponseAllOf1"
+            }
+          ]
+        },
+        "typesSuccessResponseAllOf0": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/baseError"
+            }
+          ],
+          "x-go-gen-location": "models"
+        },
+        "typesSuccessResponseAllOf1": {
+          "properties": {
+            "Types": {
+              "type": "array",
+              "default": [],
+              "items": {
+                "type": "object",
+                "default": {}
+              }
+            }
+          },
+          "x-go-gen-location": "models"
+        },
+        "updateMeParamsBody": {
+          "type": "object",
+          "properties": {
+            "displayName": {
+              "description": "The name that is displayed for this user.",
+              "type": "string"
+            },
+            "email": {
+              "description": "The user's email address.",
+              "type": "string"
+            }
+          },
+          "x-go-gen-location": "operations"
+        },
+        "updateRoleParamsBody": {
+          "type": "object",
+          "required": [
+            "permissions"
+          ],
+          "properties": {
+            "role_name": {
+              "type": "string",
+              "description": "Display name of role e.g. Administrator"
+            },
+            "description": {
+              "description": "The description of the role.",
+              "type": "string"
+            },
+            "permissions": {
+              "description": "The permissions associated with the role.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "role_name": "string",
+            "description": "string",
+            "permissions": [
+              "string"
+            ]
+          },
+          "x-go-gen-location": "operations"
+        },
+        "updateUserParamsBody": {
+          "type": "object",
+          "required": [
+            "user_roles"
+          ],
+          "properties": {
+            "approval_status": {
+              "description": "The status of the user's access to the web client.",
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved"
+              ]
+            },
+            "displayName": {
+              "description": "The name that is displayed for this user.",
+              "type": "string"
+            },
+            "email": {
+              "description": "The user's email address.",
+              "type": "string"
+            },
+            "user_roles": {
+              "description": "The roles assigned to the user.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "x-go-gen-location": "operations"
+        }
+      }
+    }
+  }
