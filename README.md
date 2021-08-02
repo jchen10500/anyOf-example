@@ -1,5 +1,5 @@
 ```
 deny {                                                                
-  input.request.server.version == "Pod"                      
+  input.request.server.versions == "Pod"                      
 }
 ```
